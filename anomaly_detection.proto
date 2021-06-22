@@ -6,7 +6,7 @@ package twitteranomalydetection;
 
 service TwitterAnomalyDetection {
 
-  rpc DetectAnomalies (Request) returns (Response) {}
+  rpc DetectAnomalies (Request) returns (Dictionary) {}
 }
 
 message Request {
@@ -16,7 +16,6 @@ message Request {
 
 }
 
-message Response {
-  repeated float entries = 1; 
+message Dictionary {
+  map<string, float> pairs = 1;
 }
-  

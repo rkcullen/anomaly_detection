@@ -17,7 +17,7 @@ class TwitterAnomalyDetectionStub(object):
         self.DetectAnomalies = channel.unary_unary(
                 '/twitteranomalydetection.TwitterAnomalyDetection/DetectAnomalies',
                 request_serializer=anomaly__detection__pb2.Request.SerializeToString,
-                response_deserializer=anomaly__detection__pb2.Response.FromString,
+                response_deserializer=anomaly__detection__pb2.Dictionary.FromString,
                 )
 
 
@@ -36,7 +36,7 @@ def add_TwitterAnomalyDetectionServicer_to_server(servicer, server):
             'DetectAnomalies': grpc.unary_unary_rpc_method_handler(
                     servicer.DetectAnomalies,
                     request_deserializer=anomaly__detection__pb2.Request.FromString,
-                    response_serializer=anomaly__detection__pb2.Response.SerializeToString,
+                    response_serializer=anomaly__detection__pb2.Dictionary.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -61,6 +61,6 @@ class TwitterAnomalyDetection(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/twitteranomalydetection.TwitterAnomalyDetection/DetectAnomalies',
             anomaly__detection__pb2.Request.SerializeToString,
-            anomaly__detection__pb2.Response.FromString,
+            anomaly__detection__pb2.Dictionary.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

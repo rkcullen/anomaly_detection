@@ -1,7 +1,7 @@
 from concurrent import futures
 import logging
 
-import tad
+from tad import anomaly_detect_ts
 import grpc
 
 import json
@@ -17,11 +17,14 @@ class TwitterAnomalyDetection(anomaly_detection_pb2_grpc.TwitterAnomalyDetection
         return pd.datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
 
     def DetectAnomalies(self, request, context):
-        raw_csv = StringIO(request.raw_json) 
+        raw_csv = StringIO(request.raw_json)
+        only_last = request.only_last
         data1 = pd.read_csv(raw_csv, index_col='timestamp', parse_dates=True, squeeze=True, date_parser=self.dparserfunc) 
-        result = tad.anomaly_detect_ts(data1, alpha=0.05, direction="both", plot=False, longterm=True)
-        print(result["anoms"].to_list())
-        return anomaly_detection_pb2.Response(entries=result["anoms"].to_list())
+        result = anomaly_detect_ts(data1, alpha=0.05, direction="both", only_last=only_last, plot=False, longterm=True)
+        pairs = {} 
+        for key in result["anoms"].to_dict():
+            pairs[key.strftime("%Y-%m-%d %H:%M:%S")] = result["anoms"][key]
+        return anomaly_detection_pb2.Dictionary(pairs=pairs)
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
