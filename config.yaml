@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: twitter-anomaly-detection 
+    labels:
+        app: twitter-anomaly-detection
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            app: twitter-anomaly-detection
+    template:
+        metadata:
+            labels:
+                app: twitter-anomaly-detection
+        spec:
+            containers:
+                - name: twitter-anomaly-detection
+                  image: cmdaa/grpc-services:0.1
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: twitter-anomaly-detection 
+spec:
+    selector:
+        app: twitter-anomaly-detection
+    ports:
+        - protocol: TCP
+          port: 50051
+          targetPort: 50051
