@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: anomaly-client 
+    labels:
+        app: anomaly-client
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            app: anomaly-client
+    template:
+        metadata:
+            labels:
+                app: anomaly-client
+        spec:
+            containers:
+                - name: anomaly-client
+                  image: cmdaa/grpc-client:0.1
+                  env:
+                      - name: ANOMALY_DETECTION_HOST
+                        value: twitter-anomaly-detection 
